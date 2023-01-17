@@ -1,0 +1,43 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
+from sklearn.datasets import fetch_openml
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import r2_score
+df = pd.read_excel('C:/Users/Zafar Ali/Desktop/Downloads/Folds5x2_pp.xlsx')
+df.head()
+df.isnull().sum()
+sns.set(rc={'figure.figsize':(11.7,8.27)})
+sns.distplot(df['PE'],bins =10)
+plt.show()
+correlation_matrix = df.corr().round(2)
+sns.heatmap(data=correlation_matrix, annot=True)
+x = df.drop(['PE'],axis =1).values
+y = df['PE'].values
+print(x)
+print(y)
+x_train, x_test, y_train, y_test=train_test_split(x, y,test_size=0.3,random_state=0)
+lin_model = LinearRegression()
+lin_model.fit(x_train, y_train)
+y_pred = lin_model.predict(x_test)
+print(y_pred)
+y_train_predict = lin_model.predict(x_train)
+testpred = lin_model.predict(x_test)
+rmse= (np.sqrt(mean_squared_error(y_train, y_train_predict)))
+r2 =r2_score(y_train,y_train_predict)
+print("the model perf")
+print("<<<<<<<<<<<_____________>>>>>>>>>>")
+print('RMSE is {}'.format(rmse))
+print('RMSE score is {}'.format(r2))
+y_test_predict = lin_model.predict(x_test)
+rmse= (mean_squared_error(y_test, y_test_predict))
+r2 =r2_score(y_test,y_test_predict)
+print("the model perf")
+print("<<<<<<<<<<<____________>>>>>>>>>>>")
+print('RMSE is {}'.format(rmse))
+print('RMSE score is {}'.format(r2))
+plt.scatter(y_test,y_test_predict,color='g')
+plt.show()
